@@ -65,3 +65,12 @@ dist/
 # apres une modif en local pour pousser sur ma supabase
 
 bun x prisma db push
+/src/generated/prisma
+
+.md
+.agents/
+.claude/
+.windsurf/
+.cursor/
+.devin/
+
