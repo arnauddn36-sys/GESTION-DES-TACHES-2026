@@ -74,3 +74,5 @@ bun x prisma db push
 .cursor/
 .devin/
 
+*.tsbuildinfo
+*.tsbuildinfo
