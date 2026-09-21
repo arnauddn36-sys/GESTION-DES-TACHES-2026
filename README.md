@@ -17,6 +17,7 @@ API REST de gestion de tâches construite avec **NestJS** (TypeScript), **Prisma
 - Prisma 7.10.0 avec l'adaptateur `@prisma/adapter-pg`
 - PostgreSQL (local ou hébergé, par exemple sur Supabase)
 - JWT pour l'authentification
+- helmet pour les en-têtes de sécurité HTTP
 - bun comme gestionnaire de paquets
 - Vitest pour les tests du projet
 - Bruno pour la collection de requêtes et de tests d'API
@@ -31,8 +32,8 @@ API REST de gestion de tâches construite avec **NestJS** (TypeScript), **Prisma
 ## Installation
 
 ```bash
-git clone <url-du-depot>
-cd <dossier-du-projet>
+git  clone https://github.com/arnauddn36-sys/GESTION-DES-TACHES-2026.git
+cd GESTION-DES-TACHES-2026
 bun install
 ```
 
@@ -44,10 +45,10 @@ Copie le fichier d'exemple, puis remplace les valeurs par les tiennes :
 cp .env.example .env
 ```
 
-| Variable       | Rôle                                                              |
-| -------------- | ----------------------------------------------------------------- |
-| `DATABASE_URL` | Chaîne de connexion PostgreSQL                                    |
-| `JWT_SECRET`   | Secret servant à signer les JWT (longue chaîne aléatoire)         |
+| Variable       | Rôle                                                      |
+| -------------- | --------------------------------------------------------- |
+| `DATABASE_URL` | Chaîne de connexion PostgreSQL                            |
+| `JWT_SECRET`   | Secret servant à signer les JWT (longue chaîne aléatoire) |
 
 Pour générer un secret :
 
@@ -86,21 +87,21 @@ L'API écoute sur `http://localhost:3000`.
 
 ### Authentification
 
-| Méthode | Route            | Description                                         |
-| ------- | ---------------- | --------------------------------------------------- |
+| Méthode | Route            | Description                                          |
+| ------- | ---------------- | ---------------------------------------------------- |
 | POST    | `/auth/register` | Crée un compte (`name`, `email`, `password`) → `201` |
 | POST    | `/auth/login`    | Connexion (`email`, `password`) → `{ access_token }` |
 
 ### Tâches (toutes protégées par `Authorization: Bearer <token>`)
 
-| Méthode | Route                  | Description                                            |
-| ------- | ---------------------- | ------------------------------------------------------ |
-| POST    | `/tasks`               | Crée une tâche pour l'utilisateur connecté → `201`     |
-| GET     | `/tasks`               | Liste **ses** tâches (filtres ci-dessous)              |
-| GET     | `/tasks/:id`           | Détail d'une tâche (`404` si inexistante ou d'un autre) |
-| PUT     | `/tasks/:id`           | Modifie une tâche dont il est propriétaire             |
-| PATCH   | `/tasks/:id/complete`  | Marque la tâche comme terminée                         |
-| DELETE  | `/tasks/:id`           | Supprime la tâche → `204 No Content`                   |
+| Méthode | Route                 | Description                                             |
+| ------- | --------------------- | ------------------------------------------------------- |
+| POST    | `/tasks`              | Crée une tâche pour l'utilisateur connecté → `201`      |
+| GET     | `/tasks`              | Liste **ses** tâches (filtres ci-dessous)               |
+| GET     | `/tasks/:id`          | Détail d'une tâche (`404` si inexistante ou d'un autre) |
+| PUT     | `/tasks/:id`          | Modifie une tâche dont il est propriétaire              |
+| PATCH   | `/tasks/:id/complete` | Marque la tâche comme terminée                          |
+| DELETE  | `/tasks/:id`          | Supprime la tâche → `204 No Content`                    |
 
 Filtres sur `GET /tasks` : `?completed=true|false` et `?priority=low|medium|high`.
 
