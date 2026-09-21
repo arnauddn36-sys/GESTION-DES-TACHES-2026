@@ -1,114 +1,149 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# API REST — Gestion de tâches avec authentification
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST de gestion de tâches construite avec **NestJS** (TypeScript), **Prisma** et **PostgreSQL**. Chaque utilisateur s'inscrit, se connecte avec un **JWT** et ne peut voir ou modifier que **ses propres tâches**. Une collection **Bruno** documente et teste l'API.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Fonctionnalités
 
-## Description
+- Création de compte et connexion (JWT)
+- CRUD des tâches : créer, lister, consulter, modifier, marquer comme terminée, supprimer
+- Filtrage des tâches par état (`completed`) et par priorité (`priority`)
+- Isolation des données : un utilisateur n'accède jamais aux tâches d'un autre (réponse `404`)
+- Validation des données d'entrée (DTO) et messages d'erreur clairs
+- Mots de passe hashés avec sel, jamais stockés ni renvoyés en clair
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Technologies
 
-## Project setup
+- NestJS (TypeScript, modules ESM)
+- Prisma 7.10.0 avec l'adaptateur `@prisma/adapter-pg`
+- PostgreSQL (local ou hébergé, par exemple sur Supabase)
+- JWT pour l'authentification
+- bun comme gestionnaire de paquets
+- Vitest pour les tests du projet
+- Bruno pour la collection de requêtes et de tests d'API
 
-```bash
-$ bun install
-```
+## Prérequis
 
-## Compile and run the project
+- **Node.js** (version LTS récente)
+- **bun** : https://bun.sh
+- **PostgreSQL 15 ou plus**, en local ou hébergé (par exemple un projet Supabase)
+- **Bruno** (extension VS Code, application, ou CLI via `npx @usebruno/cli`)
+
+## Installation
 
 ```bash
-# development
-$ bun run start
-
-# watch mode
-$ bun run start:dev
-
-# production mode
-$ bun run start:prod
+git clone <url-du-depot>
+cd <dossier-du-projet>
+bun install
 ```
 
-## Run tests
+## Configuration (`.env`)
+
+Copie le fichier d'exemple, puis remplace les valeurs par les tiennes :
 
 ```bash
-# unit tests
-$ bun run test
-
-# e2e tests
-$ bun run test:e2e
-
-# test coverage
-$ bun run test:cov
+cp .env.example .env
 ```
 
-## Deployment
+| Variable       | Rôle                                                              |
+| -------------- | ----------------------------------------------------------------- |
+| `DATABASE_URL` | Chaîne de connexion PostgreSQL                                    |
+| `JWT_SECRET`   | Secret servant à signer les JWT (longue chaîne aléatoire)         |
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Pour générer un secret :
 
 ```bash
-$ bun install -g @nestjs/mau
-$ mau deploy
+openssl rand -base64 32
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+> Le fichier `.env` contient des secrets : il ne doit **jamais** être poussé sur GitHub. Il est ignoré par Git ; seul `.env.example` est versionné.
 
-## Observability
+## Base de données
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
+Crée les tables, génère le client Prisma, puis charge les données d'essai :
 
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
+```bash
+bunx prisma generate
+bunx prisma migrate deploy
+bun run seed
+```
 
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
+Le seed crée 2 utilisateurs (`alice@example.com` et `bob@example.com`, mots de passe définis dans `prisma/seed.ts`) et 7 tâches de priorités et d'états variés (4 pour Alice, 3 pour Bob).
 
-## Resources
+## Lancer l'API
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+# développement (rechargement automatique)
+bun run start:dev
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observer](https://observer.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# production
+bun run build
+bun run start:prod
+```
 
-## Support
+L'API écoute sur `http://localhost:3000`.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Endpoints
 
-## Stay in touch
+### Authentification
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+| Méthode | Route            | Description                                         |
+| ------- | ---------------- | --------------------------------------------------- |
+| POST    | `/auth/register` | Crée un compte (`name`, `email`, `password`) → `201` |
+| POST    | `/auth/login`    | Connexion (`email`, `password`) → `{ access_token }` |
 
-## License
+### Tâches (toutes protégées par `Authorization: Bearer <token>`)
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+| Méthode | Route                  | Description                                            |
+| ------- | ---------------------- | ------------------------------------------------------ |
+| POST    | `/tasks`               | Crée une tâche pour l'utilisateur connecté → `201`     |
+| GET     | `/tasks`               | Liste **ses** tâches (filtres ci-dessous)              |
+| GET     | `/tasks/:id`           | Détail d'une tâche (`404` si inexistante ou d'un autre) |
+| PUT     | `/tasks/:id`           | Modifie une tâche dont il est propriétaire             |
+| PATCH   | `/tasks/:id/complete`  | Marque la tâche comme terminée                         |
+| DELETE  | `/tasks/:id`           | Supprime la tâche → `204 No Content`                   |
+
+Filtres sur `GET /tasks` : `?completed=true|false` et `?priority=low|medium|high`.
+
+### Règles de validation
+
+- `name`, `email` et `password` obligatoires à l'inscription ; email valide et unique (`409` s'il existe déjà)
+- `title` obligatoire et non vide
+- `priority` : `low`, `medium` ou `high`
+- `completed` : booléen (`false` par défaut)
+
+## Lancer les tests
+
+Tests du projet :
+
+```bash
+bun run test
+bun run test:e2e
+```
+
+## Utiliser Bruno
+
+La collection **Tasks API** est dans le dossier `Tasks API/` (Auth et Tasks, avec assertions).
+
+**Avec l'extension ou l'application Bruno :**
+
+1. Ouvre le dossier `Tasks API` comme collection.
+2. Sélectionne l'environnement `local` (variable `baseUrl` = `http://localhost:3000`).
+3. Lance l'API et le seed, puis envoie les requêtes.
+
+**En ligne de commande (recommandé, tout s'exécute d'un coup) :**
+
+```bash
+cd "Tasks API"
+npx @usebruno/cli run --env local
+```
+
+Résultat attendu : 22 requêtes et 37 tests réussis. Les tests couvrent l'inscription, la connexion, l'accès protégé avec et sans token, le CRUD, le filtrage, les données invalides, et l'**isolation** : Bob ne peut ni consulter, ni modifier, ni supprimer une tâche d'Alice.
+
+> Le Runner de l'extension VS Code peut boucler sans s'arrêter ; la CLI n'a pas ce défaut.
+
+## Sécurité
+
+- Mots de passe hashés avec sel, jamais renvoyés dans les réponses
+- Routes des tâches protégées par JWT
+- `userId` déterminé par le serveur à partir du token, jamais fourni par le client
+- Secrets dans `.env`, non versionné
