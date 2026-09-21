@@ -1,0 +1,29 @@
+meta {
+  name: Update task
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/tasks/{{taskId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAlice}}
+}
+
+body:json {
+  {"title": "Tâche modifiée", "description": "Modifiée depuis Bruno", "priority": "low", "completed": false}
+}
+
+tests {
+  test("statut 200", function () { expect(res.status).to.equal(200); });
+  test("titre modifié", function () { expect(res.body.title).to.equal("Tâche modifiée"); });
+}
+
+script:post-response {
+  bru.runner.setNextRequest("Complete task");
+}
+

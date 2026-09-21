@@ -1,0 +1,24 @@
+meta {
+  name: Get task not found
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/tasks/999999
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAlice}}
+}
+
+tests {
+  test("statut 404", function () { expect(res.status).to.be.oneOf([404]); });
+}
+
+script:post-response {
+  bru.runner.setNextRequest("Filter tasks");
+}
+

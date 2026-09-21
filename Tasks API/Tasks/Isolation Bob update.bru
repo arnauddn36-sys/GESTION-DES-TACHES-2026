@@ -1,0 +1,28 @@
+meta {
+  name: Isolation Bob update
+  type: http
+  seq: 11
+}
+
+put {
+  url: {{baseUrl}}/tasks/{{taskId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenBob}}
+}
+
+body:json {
+  {"title": "Tâche modifiée", "description": "Modifiée depuis Bruno", "priority": "low", "completed": false}
+}
+
+tests {
+  test("statut 403, 404", function () { expect(res.status).to.be.oneOf([403, 404]); });
+}
+
+script:post-response {
+  bru.runner.setNextRequest("Isolation Bob complete");
+}
+

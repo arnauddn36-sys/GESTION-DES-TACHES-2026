@@ -1,0 +1,36 @@
+meta {
+  name: Create task
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/tasks
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAlice}}
+}
+
+body:json {
+  {"title": "Tâche créée depuis Bruno", "description": "Test automatisé", "priority": "high"}
+}
+
+vars:post-response {
+  taskId: res.body.id
+}
+
+tests {
+  test("statut 201", function () { expect(res.status).to.equal(201); });
+  test("id présent", function () { expect(res.body).to.have.property("id"); });
+  test("titre correct", function () { expect(res.body.title).to.equal("Tâche créée depuis Bruno"); });
+  test("priorité correcte", function () { expect(res.body.priority).to.equal("high"); });
+  test("completed vaut false par défaut", function () { expect(res.body.completed).to.equal(false); });
+}
+
+script:post-response {
+  bru.runner.setNextRequest("Create task invalid data");
+}
+

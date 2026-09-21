@@ -1,0 +1,20 @@
+meta {
+  name: Protected route without token
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/tasks
+  body: none
+  auth: none
+}
+
+tests {
+  test("statut 401", function () { expect(res.status).to.be.oneOf([401]); });
+}
+
+script:post-response {
+  bru.runner.setNextRequest("Me with valid token");
+}
+

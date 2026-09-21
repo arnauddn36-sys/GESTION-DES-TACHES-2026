@@ -1,0 +1,26 @@
+meta {
+  name: Get task by ID
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/tasks/{{taskId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAlice}}
+}
+
+tests {
+  test("statut 200", function () { expect(res.status).to.equal(200); });
+  test("bon id", function () { expect(res.body.id).to.equal(bru.getVar("taskId")); });
+  test("champs présents", function () { expect(res.body).to.include.keys("title", "priority", "completed"); });
+}
+
+script:post-response {
+  bru.runner.setNextRequest("Get task not found");
+}
+

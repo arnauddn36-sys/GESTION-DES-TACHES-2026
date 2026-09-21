@@ -1,0 +1,26 @@
+meta {
+  name: Get my tasks
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/tasks
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAlice}}
+}
+
+tests {
+  test("statut 200", function () { expect(res.status).to.equal(200); });
+  test("la réponse est un tableau", function () { expect(res.body).to.be.an("array"); });
+  test("contient la tâche créée", function () { expect(res.body.some(function (t) { return t.id === bru.getVar("taskId"); })).to.equal(true); });
+}
+
+script:post-response {
+  bru.runner.setNextRequest("Get task by ID");
+}
+

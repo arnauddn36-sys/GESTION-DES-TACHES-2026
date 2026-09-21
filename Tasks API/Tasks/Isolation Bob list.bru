@@ -1,0 +1,25 @@
+meta {
+  name: Isolation Bob list
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/tasks
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenBob}}
+}
+
+tests {
+  test("statut 200", function () { expect(res.status).to.equal(200); });
+  test("Bob ne voit pas la tâche d'Alice", function () { expect(res.body.some(function (t) { return t.id === bru.getVar("taskId"); })).to.equal(false); });
+}
+
+script:post-response {
+  bru.runner.setNextRequest("Isolation Bob get");
+}
+

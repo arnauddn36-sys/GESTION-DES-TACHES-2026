@@ -1,0 +1,29 @@
+meta {
+  name: Login Bob
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {"email": "bob@example.com", "password": "Password123!"}
+}
+
+vars:post-response {
+  tokenBob: res.body.access_token
+}
+
+tests {
+  test("login réussi", function () { expect(res.status).to.be.oneOf([200, 201]); });
+  test("access_token présent", function () { expect(res.body.access_token).to.be.a("string"); });
+}
+
+script:post-response {
+  bru.runner.setNextRequest("Login wrong password");
+}
+

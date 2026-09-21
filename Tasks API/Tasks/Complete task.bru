@@ -1,0 +1,25 @@
+meta {
+  name: Complete task
+  type: http
+  seq: 8
+}
+
+patch {
+  url: {{baseUrl}}/tasks/{{taskId}}/complete
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAlice}}
+}
+
+tests {
+  test("statut 200", function () { expect(res.status).to.equal(200); });
+  test("completed vaut true", function () { expect(res.body.completed).to.equal(true); });
+}
+
+script:post-response {
+  bru.runner.setNextRequest("Isolation Bob list");
+}
+

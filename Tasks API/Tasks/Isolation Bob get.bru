@@ -1,0 +1,24 @@
+meta {
+  name: Isolation Bob get
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/tasks/{{taskId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenBob}}
+}
+
+tests {
+  test("statut 403, 404", function () { expect(res.status).to.be.oneOf([403, 404]); });
+}
+
+script:post-response {
+  bru.runner.setNextRequest("Isolation Bob update");
+}
+

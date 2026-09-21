@@ -1,0 +1,35 @@
+meta {
+  name: Filter tasks
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/tasks?completed=false&priority=high
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAlice}}
+}
+
+params:query {
+  completed: false
+  priority: high
+}
+
+tests {
+  test("statut 200", function () { expect(res.status).to.equal(200); });
+  test("toutes les tâches respectent les filtres", function () {
+    res.body.forEach(function (t) {
+      expect(t.completed).to.equal(false);
+      expect(t.priority).to.equal("high");
+    });
+  });
+}
+
+script:post-response {
+  bru.runner.setNextRequest("Update task");
+}
+

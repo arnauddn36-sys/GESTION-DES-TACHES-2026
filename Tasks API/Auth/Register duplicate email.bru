@@ -1,0 +1,24 @@
+meta {
+  name: Register duplicate email
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {"name": "Alice", "email": "alice@example.com", "password": "Password123!"}
+}
+
+tests {
+  test("statut 400, 409", function () { expect(res.status).to.be.oneOf([400, 409]); });
+}
+
+script:post-response {
+  bru.runner.setNextRequest("Login Alice");
+}
+
