@@ -20,14 +20,31 @@ export class TasksService {
   }
 
   findAll(userId: string, filters: FilterTaskDto) {
+    const { completed, priority, search, page, limit } = filters;
+
+    const where = {
+      userId,
+      ...(completed !== undefined && { completed: completed === 'true' }),
+      ...(priority && { priority }),
+      ...(search && {
+        OR: [
+          { title: { contains: search, mode: 'insensitive' as const } },
+          { description: { contains: search, mode: 'insensitive' as const } },
+        ],
+      }),
+    };
+
+    if (page === undefined && limit === undefined) {
+      return this.prisma.task.findMany({ where });
+    }
+
+    const currentPage = page ? parseInt(page, 10) : 1;
+    const pageSize = limit ? parseInt(limit, 10) : 10;
+
     return this.prisma.task.findMany({
-      where: {
-        userId,
-        ...(filters.completed !== undefined && {
-          completed: filters.completed === 'true',
-        }),
-        ...(filters.priority && { priority: filters.priority }),
-      },
+      where,
+      skip: (currentPage - 1) * pageSize,
+      take: pageSize,
     });
   }
 

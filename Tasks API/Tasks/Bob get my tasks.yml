@@ -1,0 +1,33 @@
+info:
+  name: Bob get my tasks
+  type: http
+  seq: 14
+
+http:
+  method: GET
+  url: http://localhost:3001/tasks
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Piratage",
+        "priority": "low"
+      }
+  auth:
+    type: bearer
+    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4YzEzYzMwZS0xM2ZlLTQ2ZjMtYWM0OC1iMmY5ODFlZGMyN2QiLCJlbWFpbCI6ImJvYi50ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzkwNzYzOTg4LCJleHAiOjE3OTA4NTAzODh9.E_xH9RgW9mx2Vyzj80vTh73Xtcz61swJviC_15g7ueE '
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("La liste de Bob est vide", function () {
+          expect(res.getStatus()).to.equal(200);
+          expect(res.body).to.be.an("array").that.is.empty;
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

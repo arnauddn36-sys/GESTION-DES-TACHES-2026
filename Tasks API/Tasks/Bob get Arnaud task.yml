@@ -1,0 +1,25 @@
+info:
+  name: Bob get Arnaud task
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://localhost:3001/tasks/aa46cfbc-cd87-4054-9bb8-ab6f565262eb
+  auth:
+    type: bearer
+    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4YzEzYzMwZS0xM2ZlLTQ2ZjMtYWM0OC1iMmY5ODFlZGMyN2QiLCJlbWFpbCI6ImJvYi50ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzkwNzYzOTg4LCJleHAiOjE3OTA4NTAzODh9.E_xH9RgW9mx2Vyzj80vTh73Xtcz61swJviC_15g7ueE '
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Bob ne peut pas voir la tâche d'Arnaud", function () {
+          expect(res.getStatus()).to.equal(404);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

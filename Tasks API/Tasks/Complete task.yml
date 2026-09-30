@@ -1,0 +1,29 @@
+info:
+  name: 'Complete task '
+  type: http
+  seq: 1
+
+http:
+  method: PATCH
+  url: http://localhost:3001/tasks/aa46cfbc-cd87-4054-9bb8-ab6f565262eb/complete
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZmQ0MTQ5MS03Mzc2LTRjMDAtOWZlMi0yYWMzMTgzOGFlYTYiLCJlbWFpbCI6ImFybmF1ZGRuNkBnbWFpbC5jb20iLCJpYXQiOjE3OTA3NTc3NjMsImV4cCI6MTc5MDg0NDE2M30.OE3W6Z9Z0HrezhdUzQNP1g2PoTMtx5zd3gWxAx7Useo
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Complete renvoie 200", function () {
+          expect(res.getStatus()).to.equal(200);
+        });
+
+        test("La tâche est marquée terminée", function () {
+          expect(res.body.completed).to.equal(true);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

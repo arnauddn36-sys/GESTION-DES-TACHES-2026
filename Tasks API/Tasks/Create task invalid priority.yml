@@ -1,0 +1,32 @@
+info:
+  name: Create task invalid priority
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3001/tasks
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Tâche invalide",
+        "priority": "urgent"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZmQ0MTQ5MS03Mzc2LTRjMDAtOWZlMi0yYWMzMTgzOGFlYTYiLCJlbWFpbCI6ImFybmF1ZGRuNkBnbWFpbC5jb20iLCJpYXQiOjE3OTA3NjI5NjUsImV4cCI6MTc5MDg0OTM2NX0.B88iK1fJeBEdjsqN1c78ZCYxbSYIIsDGcGju_5196Qo
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Priorité invalide renvoie 400", function () {
+          expect(res.getStatus()).to.equal(400);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,36 @@
+info:
+  name: Register
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://localhost:3001/auth/register
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Test User",
+        "email": "{{$randomEmail}}",
+        "password": "MotDePasse123"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Register renvoie 201", function () {
+          expect(res.getStatus()).to.equal(201);
+        });
+
+        test("Register renvoie l'utilisateur sans mot de passe", function () {
+          expect(res.body).to.have.property("email");
+          expect(res.body).to.not.have.property("password");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

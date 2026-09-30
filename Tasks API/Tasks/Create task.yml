@@ -1,0 +1,43 @@
+info:
+  name: Create task
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3001/tasks
+  headers:
+    - name: Authorization
+      value: Bearer {{tokenArnaud}}
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Ma première tâche",
+        "description": "Test depuis Bruno",
+        "priority": "high"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZmQ0MTQ5MS03Mzc2LTRjMDAtOWZlMi0yYWMzMTgzOGFlYTYiLCJlbWFpbCI6ImFybmF1ZGRuNkBnbWFpbC5jb20iLCJpYXQiOjE3OTA2ODQ1NDEsImV4cCI6MTc5MDc3MDk0MX0.w06N4ptSriPBjWv3xb0P3ySXCLlsogkpqAPo6mQviao
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Création renvoie 201", function () {
+          expect(res.getStatus()).to.equal(201);
+        });
+
+        test("La tâche créée a les bons champs", function () {
+          expect(res.body).to.have.property("id");
+          expect(res.body.title).to.equal("Ma première tâche");
+          expect(res.body.priority).to.equal("high");
+          expect(res.body.completed).to.equal(false);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

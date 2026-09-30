@@ -1,0 +1,8 @@
+name: local
+variables:
+  - secret: true
+    name: tokenArnaud
+  - secret: true
+    name: tokenBob
+  - name: baseUrl
+    value: http://localhost:3001

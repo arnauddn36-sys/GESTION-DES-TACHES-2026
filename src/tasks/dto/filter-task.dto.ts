@@ -1,4 +1,4 @@
-import { IsIn, IsOptional, IsBooleanString } from 'class-validator';
+import { IsIn, IsOptional, IsBooleanString, IsNumberString, IsString } from 'class-validator';
 
 export class FilterTaskDto {
   @IsBooleanString()
@@ -8,4 +8,16 @@ export class FilterTaskDto {
   @IsIn(['low', 'medium', 'high'])
   @IsOptional()
   priority?: string;
+
+  @IsString()
+  @IsOptional()
+  search?: string;
+
+  @IsNumberString()
+  @IsOptional()
+  page?: string;
+
+  @IsNumberString()
+  @IsOptional()
+  limit?: string;
 }

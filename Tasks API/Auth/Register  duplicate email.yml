@@ -1,0 +1,31 @@
+info:
+  name: Register  duplicate email
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3001/auth/register
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Arnaud ",
+        "email": "arnauddn6@gmail.com",
+        "password": "password123"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Email déjà utilisé renvoie 409", function () {
+          expect(res.getStatus()).to.equal(409);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

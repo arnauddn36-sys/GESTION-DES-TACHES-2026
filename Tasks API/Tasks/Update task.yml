@@ -1,0 +1,38 @@
+info:
+  name: Update task
+  type: http
+  seq: 1
+
+http:
+  method: PUT
+  url: http://localhost:3001/tasks/e7cb1723-345a-4918-b35b-4061bdc9f7f9
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Tâche modifiée",
+        "description": "Modifiée depuis Bruno",
+        "priority": "low"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZmQ0MTQ5MS03Mzc2LTRjMDAtOWZlMi0yYWMzMTgzOGFlYTYiLCJlbWFpbCI6ImFybmF1ZGRuNkBnbWFpbC5jb20iLCJpYXQiOjE3OTA3NTc3NjMsImV4cCI6MTc5MDg0NDE2M30.OE3W6Z9Z0HrezhdUzQNP1g2PoTMtx5zd3gWxAx7Useo
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Update renvoie 200", function () {
+          expect(res.getStatus()).to.equal(200);
+        });
+
+        test("La tâche est modifiée", function () {
+          expect(res.body.title).to.equal("Tâche modifiée");
+          expect(res.body.priority).to.equal("low");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
