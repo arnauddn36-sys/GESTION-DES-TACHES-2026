@@ -148,3 +148,26 @@ Résultat attendu : 22 requêtes et 37 tests réussis. Les tests couvrent l'insc
 - Routes des tâches protégées par JWT
 - `userId` déterminé par le serveur à partir du token, jamais fourni par le client
 - Secrets dans `.env`, non versionné
+
+``bash
+
+# 1. Construire l'image
+
+docker build -t gestion-des-taches .
+
+# 2. Lancer le conteneur (l'API écoute sur le port 3001)
+
+docker run -d --name mon-api --env-file .env -p 3001:3001 gestion-des-taches
+
+# 3. Vérifier : une route protégée doit répondre 401 sans token
+
+curl -i http://localhost:3001/tasks
+
+# 4. Voir les logs, puis arrêter et supprimer le conteneur
+
+docker logs mon-api
+docker stop mon-api && docker rm mon-api
+
+```
+
+```
