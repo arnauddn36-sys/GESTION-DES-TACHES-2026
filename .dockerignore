@@ -1,0 +1,33 @@
+# Dépendances : réinstallées proprement dans l'image
+node_modules
+
+# Fichiers générés : recréés pendant le build
+dist
+src/generated
+*.tsbuildinfo
+coverage
+
+# Secrets : jamais dans une image
+.env*
+
+# Outils, éditeurs et agents
+.git
+.agents
+.claude
+.cursor
+.devin
+.windsurf
+skills-lock.json
+.vscode
+.idea
+
+# Documentation et tests d'API
+Tasks API
+README.md
+prisma-next.md
+*.log
+
+# Docker lui-même
+Dockerfile
+docker-compose.yml
+.dockerignore
