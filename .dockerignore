@@ -31,3 +31,4 @@ prisma-next.md
 Dockerfile
 docker-compose.yml
 .dockerignore
+frontend
